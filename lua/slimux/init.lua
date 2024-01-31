@@ -2,7 +2,7 @@ local M = {}
 
 M.__target_socket = ""
 M.__target_pane = ""
-M.__escaped_strings = { '\\', ';', '"', '$', '\'' }
+M.__escaped_strings = { "\\", ";", '"', "$", "'" }
 
 function M.setup(config)
 	M.__target_socket = config.target_socket
@@ -43,8 +43,10 @@ function M.__capture_highlighted_text()
 	local start_line, _ = unpack(vim.api.nvim_buf_get_mark(current_buffer, "<"))
 	local end_line, _ = unpack(vim.api.nvim_buf_get_mark(current_buffer, ">"))
 	local highlighted_text = vim.api.nvim_buf_get_lines(current_buffer, start_line - 1, end_line, false)
-	highlighted_text = table.concat(highlighted_text, "\n")
-	return highlighted_text
+	local concat_text = table.concat(highlighted_text, "\r\n")
+	-- highlighted_text = table.concat(highlighted_text, "\r\n")
+	-- return highlighted_text
+	return concat_text
 end
 
 function M.__capture_paragraph_text()
@@ -67,7 +69,7 @@ function M.__capture_paragraph_text()
 		end_line = end_line + 1
 	end
 	local paragraph_lines = vim.api.nvim_buf_get_lines(current_buffer, start_line, end_line, false)
-	local paragraph_text = table.concat(paragraph_lines, "\n")
+	local paragraph_text = table.concat(paragraph_lines, "\r\n")
 	return paragraph_text
 end
 
@@ -90,8 +92,8 @@ function M.__send(text)
 	else
 		flag = "L"
 	end
-	local cmd = string.format('tmux -%s %s send-keys -t %s -- "%s" Enter', flag, M.__target_socket, M.__target_pane,
-		text)
+	local cmd =
+		string.format('tmux -%s %s send-keys -t %s -- "%s" Enter', flag, M.__target_socket, M.__target_pane, text)
 	vim.fn.systemlist(cmd)
 end
 
