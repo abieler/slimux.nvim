@@ -43,9 +43,9 @@ function M.__capture_highlighted_text()
 	local start_line, _ = unpack(vim.api.nvim_buf_get_mark(current_buffer, "<"))
 	local end_line, _ = unpack(vim.api.nvim_buf_get_mark(current_buffer, ">"))
 	local highlighted_lines = vim.api.nvim_buf_get_lines(current_buffer, start_line - 1, end_line, false)
-	-- for i, line in ipairs(highlighted_lines) do
-	-- 	highlighted_lines[i] = string.gsub(line, "^%s+", "")
-	-- end
+	for i, line in ipairs(highlighted_lines) do
+		highlighted_lines[i] = string.gsub(line, "\t", "  ")
+	end
 	local concat_text = table.concat(highlighted_lines, "\n")
 	return concat_text
 end
